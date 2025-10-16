@@ -1,0 +1,56 @@
+services:
+  game-api:
+    build:
+      context: ./app-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEST_APP_NAME=code-challenge-app
+      - POSTGRESQL_URL=postgresql://code-challenge:code-challenge@postgresql-db:5432/code-challenge-app
+    depends_on:
+      - postgresql-db
+    networks:
+      - app-network
+  app-ui:
+    build:
+      context: ./app-ui
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  postgresql-db:
+    image: postgres:latest
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: code-challenge
+      POSTGRES_PASSWORD: code-challenge
+      PGDATA: /var/tmp/data
+    volumes:
+      - ./data:/var/tmp/data
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: test@example.com
+      PGADMIN_DEFAULT_PASSWORD: code-challenge
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
