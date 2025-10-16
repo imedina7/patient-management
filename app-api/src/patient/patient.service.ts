@@ -1,6 +1,6 @@
 import { Cursor, EntityManager, QueryOrder } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
-import { Patient } from './database/entities';
+import { Patient } from '../database/entities';
 
 export enum SortDirection {
   Asc = 'ASC',

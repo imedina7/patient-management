@@ -9,6 +9,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PatientService, PatientSort, SortDirection } from './patient.service';
+import { EmailService } from 'src/email/email.service';
 
 interface RegisterPatientDTO {
   firstName: string;
@@ -19,7 +20,10 @@ interface RegisterPatientDTO {
 
 @Controller('patients')
 export class PatientController {
-  constructor(private readonly patientService: PatientService) {}
+  constructor(
+    private readonly patientService: PatientService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @Get()
   findPatients(
@@ -31,16 +35,23 @@ export class PatientController {
   }
 
   @Post()
-  registerPatient(
+  async registerPatient(
     @Body(new ValidationPipe())
     { firstName, lastName, email, phoneNumber }: RegisterPatientDTO,
   ) {
-    return this.patientService.register(
+    const patient = await this.patientService.register(
       firstName,
       lastName,
       email,
       phoneNumber,
     );
+
+    await this.emailService.sendMail(
+      patient.email,
+      'Welcome!',
+      'You have been registered successfully',
+    );
+    return patient;
   }
 
   @Delete(':id')

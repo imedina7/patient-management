@@ -51,6 +51,18 @@ services:
     networks:
       - app-network
 
+  mailtrap:
+    image: eaudeweb/mailtrap:latest
+    restart: always
+    environment:
+      MT_USER: code-challenge
+      MT_PASSWD: code-challenge
+    ports:
+      - "8081:80"
+      - "2525:25"
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
