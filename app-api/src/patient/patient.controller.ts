@@ -77,7 +77,7 @@ export class PatientController {
           ...patient,
           createdAt: patient.createdAt.toISOString(),
           updatedAt: patient.updatedAt.toISOString(),
-          photoUrl: `${photoUrl}?sigature=${signedUrl}&expires=${expiration}`,
+          photoUrl: `${photoUrl}?signature=${signedUrl}&expires=${expiration}`,
         };
       }),
     };
