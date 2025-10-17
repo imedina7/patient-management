@@ -48,7 +48,7 @@ export default async function PatientsPage() {
               <div>Email:</div>
               <div>{patient.email}</div>
               <div>Phone number:</div>
-              <div>{patient.email}</div>
+              <div>{patient.phoneNumber}</div>
             </CardBody>
           </Card>
         ))}
