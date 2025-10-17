@@ -16,7 +16,7 @@ export default async function PatientsPage() {
   const patients = await getPatients();
   return (
     <main>
-      <Link href="/">
+      <Link href="/newpatient">
         <Button>Register Patient</Button>
       </Link>
       <p>

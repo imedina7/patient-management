@@ -59,15 +59,17 @@ export function PatientRegistrationForm() {
           </div>
         </div>
         <div className="flex flex-col">
-          <Label className="LabelRoot" htmlFor="documentPicture">
+          <Label className="LabelRoot" htmlFor="email">
             Upload a picture of your ID card
           </Label>
-          <FileDropArea
+          <Input type="file" accept="image/jpeg" name="file"></Input>
+          {/* <FileDropArea
             type="file"
             name="file"
             id="documentPicture"
             accept="image/jpeg"
-          />
+            required
+          /> */}
         </div>
         <div>
           <Button>Submit</Button>
