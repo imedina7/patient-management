@@ -19,13 +19,14 @@ export class SignatureGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest() as Request;
     const patientId = request.params['patientId'];
-    const expiration = request.query['expires'];
+    const expiration = request.query['expires']?.toString();
     const signature = request.query['signature']?.toString();
 
     if (!expiration || !signature) return false;
 
     const payload = { url: `/patients/${patientId}/photo`, exp: expiration };
-
+    const expirationDate = new Date(expiration);
+    if (Date.now() > expirationDate.getTime()) return false;
     return this.cryptoService.verify(JSON.stringify(payload), signature);
   }
 }
