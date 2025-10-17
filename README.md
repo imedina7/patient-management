@@ -8,3 +8,5 @@ App should be up and running after executing the following command on the root d
 ```bash
 docker-compose -f docker-compose.yml up
 ```
+
+Specifics on how to run each app individually can be found in their respective README.md files
