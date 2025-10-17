@@ -9,6 +9,8 @@ COPY ./yarn.lock /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+RUN mkdir /app/storage
+
 # Install dependencies and build app
 RUN yarn install
 RUN yarn run build

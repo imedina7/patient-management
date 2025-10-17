@@ -1,50 +1,58 @@
+import { getPatients } from "@/actions/patients";
 import { Button } from "@/components/Button";
-import { Card } from "@/components/Card";
-import { Input } from "@/components/Input";
-import { Label } from "@radix-ui/react-label";
+import { Card, CardBody, CardHeader } from "@/components/Card";
+import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+type PatientItemDTO = {
+  lastName: string;
+  firstName: string;
+  email: string;
+  phoneNumber: string;
+  photoUrl: string;
+};
+
+export default async function PatientsPage() {
+  const patients = await getPatients();
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <nav></nav>
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <form action="">
-          <Card>
-            <h2>Patient Registration Form</h2>
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col">
-                <Label className="LabelRoot" htmlFor="firstName">
-                  Full name
-                </Label>
-                <Input type="text" id="firstName" />
-              </div>
-              <div className="flex flex-col">
-                <Label className="LabelRoot" htmlFor="email">
-                  Email Address
-                </Label>
-                <Input type="text" id="email" />
-              </div>
-              <div className="flex flex-col">
-                <Label htmlFor="phone">Phone number</Label>
-                <div className="flex gap-2">
-                  <Input type="text" id="phone" className="w-12" />
-                  <Input type="text" id="phone" className="w-full" />
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <Label className="LabelRoot" htmlFor="email">
-                  Upload a picture of your ID card
-                </Label>
-                <Input type="file" id="documentPicture" accept="image/jpeg" />
-              </div>
-              <div>
-                <Button>Submit</Button>
-              </div>
-            </div>
+    <main>
+      <Link href="/">
+        <Button>Register Patient</Button>
+      </Link>
+      <p>
+        Here you can see a list of the currently registered patients, click on
+        their names to see more info
+      </p>
+      <div className="grid grid-cols-6 gap-3 px-5 py-2">
+        {patients.items.map((patient: PatientItemDTO) => (
+          <Card
+            className=""
+            key={
+              patient.email +
+              "-" +
+              patient.firstName +
+              patient.phoneNumber +
+              Math.random()
+            }
+          >
+            <CardHeader>
+              {patient.lastName}, {patient.firstName}
+              <Image
+                alt={patient.firstName}
+                src={`${process.env.API_BASE_URL}${patient.photoUrl}`}
+                width={200}
+                height={100}
+              ></Image>
+            </CardHeader>
+            <CardBody>
+              <div>Email:</div>
+              <div>{patient.email}</div>
+              <div>Phone number:</div>
+              <div>{patient.email}</div>
+            </CardBody>
           </Card>
-        </form>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center"></footer>
-    </div>
+        ))}
+      </div>
+    </main>
   );
 }
