@@ -1,3 +1,4 @@
+import { NotificationTransport } from 'src/notification/notification.enum';
 import { BaseEntity } from './base-entity';
 import { Entity, Property } from '@mikro-orm/postgresql';
 
@@ -14,4 +15,7 @@ export class Patient extends BaseEntity {
 
   @Property()
   phoneNumber: string;
+
+  @Property({ type: 'json', default: '{ "EMAIL": true }' })
+  notificationConfig: Record<NotificationTransport, boolean>;
 }

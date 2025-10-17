@@ -1,18 +1,20 @@
 import { Module } from '@nestjs/common';
 import { PatientController } from './patient/patient.controller';
 import { PatientService } from './patient/patient.service';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import config from '../mikro-orm.config';
-import { EmailModule } from './email/email.module';
+import { NotificationModule } from './notification/notification.module';
 import { ConfigModule } from '@nestjs/config';
+import { DatabaseModule } from './database/database.module';
+import { CryptoService } from './crypto/crypto.service';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
-    MikroOrmModule.forRoot(config),
-    EmailModule,
+    DatabaseModule,
+    NotificationModule,
+    StorageModule,
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [PatientController],
-  providers: [PatientService],
+  providers: [PatientService, CryptoService],
 })
 export class AppModule {}

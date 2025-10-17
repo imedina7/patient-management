@@ -1,29 +1,4 @@
 services:
-  game-api:
-    build:
-      context: ./app-api
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - NEST_APP_NAME=code-challenge-app
-      - POSTGRESQL_URL=postgresql://code-challenge:code-challenge@postgresql-db:5432/code-challenge-app
-    depends_on:
-      - postgresql-db
-    networks:
-      - app-network
-  app-ui:
-    build:
-      context: ./app-ui
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - NODE_ENV=production
-    networks:
-      - app-network
-
   postgresql-db:
     image: postgres:latest
     restart: always
@@ -33,7 +8,7 @@ services:
       POSTGRES_PASSWORD: code-challenge
       PGDATA: /var/tmp/data
     volumes:
-      - ./data:/var/tmp/data
+      - ./data/postgres:/var/tmp/data
     networks:
       - app-network
     ports:
@@ -51,6 +26,15 @@ services:
     networks:
       - app-network
 
+  valkey-service:
+    image: valkey/valkey:latest
+    ports:
+      - "6379:6379"
+    environment:
+      - VALKEY_API_KEY=2f10aea9ebb74ff393f482079387c54d
+    networks:
+      - app-network
+
   mailtrap:
     image: eaudeweb/mailtrap:latest
     restart: always
@@ -60,6 +44,47 @@ services:
     ports:
       - "8081:80"
       - "2525:25"
+    networks:
+      - app-network
+
+  app-api:
+    build:
+      context: ./app-api
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEST_APP_NAME=code-challenge-app
+      - DATABASE_URL=postgresql://code-challenge:code-challenge@postgresql-db:5432/code-challenge-app
+      - VALKEY_PORT=6379
+      - VALKEY_HOST=valkey-service
+      - VALKEY_API_KEY=2f10aea9ebb74ff393f482079387c54d
+      - SMTP_FROM=noreply@example.com
+      - SMTP_HOST=mailtrap
+      - HMAC_CRYPTO_KEY=04f4cd5e40b0e70d54d51d0bd0070c2bfa2cbef9466654461f754af88a955e79
+      - FILE_STORAGE_DIR=/app/storage
+    depends_on:
+      - mailtrap
+      - postgresql-db
+      - valkey-service
+    links:
+      - mailtrap
+    networks:
+      - app-network
+    volumes:
+      - ./data/storage:/app/storage
+
+  app-ui:
+    build:
+      context: ./app-ui
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=production
+      - API_BASE_URL="http://app-api:3000"
     networks:
       - app-network
 

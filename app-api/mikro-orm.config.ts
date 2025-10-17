@@ -13,11 +13,7 @@ const logger = new Logger('MikroORM');
 console.log(Object.values(entities));
 export default defineConfig({
   entities: Object.values(entities),
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASS,
-  port: parseInt(process.env.DATABASE_PORT ?? '5432'),
-  dbName: process.env.DATABASE_NAME,
+  clientUrl: process.env.DATABASE_URL,
   highlighter: new SqlHighlighter(),
   debug: true,
   baseDir: './src/database/',

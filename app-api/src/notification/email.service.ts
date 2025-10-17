@@ -6,13 +6,15 @@ import Mail from 'nodemailer/lib/mailer';
 
 @Injectable()
 export class EmailService {
-  private transport: Transporter;
+  private static transport: Transporter = null;
   private logger: Logger;
 
   constructor(private readonly configService: ConfigService) {
     this.logger = new Logger(EmailService.name);
 
-    this.transport = createTransport({
+    if (EmailService.transport != null) return;
+
+    EmailService.transport = createTransport({
       host: this.configService.get(ConfigKey.SMTP_HOST) ?? 'mailtrap',
       port: this.configService.get(ConfigKey.SMTP_PORT) ?? 25,
       auth: {
@@ -23,7 +25,7 @@ export class EmailService {
       dkim: this.configService.get(ConfigKey.SMTP_DKIM),
     });
 
-    this.transport
+    EmailService.transport
       .verify()
       .then((isCorrect: boolean) => {
         if (isCorrect) {
@@ -47,7 +49,7 @@ export class EmailService {
     const fromAddress = this.configService.get<string>(ConfigKey.SMTP_FROM);
 
     return new Promise((resolve, reject) => {
-      this.transport.sendMail(
+      EmailService.transport.sendMail(
         {
           ...(fromAddress && { from: fromAddress }),
           to,
