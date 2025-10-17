@@ -15,14 +15,16 @@ type PatientItemDTO = {
 export default async function PatientsPage() {
   const patients = await getPatients();
   return (
-    <main>
-      <Link href="/newpatient">
-        <Button>Register Patient</Button>
-      </Link>
-      <p>
-        Here you can see a list of the currently registered patients, click on
-        their names to see more info
-      </p>
+    <main className="mt-3">
+      <div className="px-5 py-2">
+        <Link href="/newpatient">
+          <Button>Register Patient</Button>
+        </Link>
+        <p>
+          Here you can see a list of the currently registered patients, click on
+          their names to see more info
+        </p>
+      </div>
       <div className="grid grid-cols-6 gap-3 px-5 py-2">
         {patients.items.map((patient: PatientItemDTO) => (
           <Card
