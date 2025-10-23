@@ -58,3 +58,4 @@ export default async function PatientsPage() {
     </main>
   );
 }
+export const dynamic = "force-dynamic";

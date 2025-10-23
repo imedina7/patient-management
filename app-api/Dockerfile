@@ -17,4 +17,4 @@ RUN yarn run build
 EXPOSE 3000
 
 # Run app.js when the container launches
-CMD [ "yarn", "run", "start:prod" ]
+CMD [ "./entrypoint.sh" ]

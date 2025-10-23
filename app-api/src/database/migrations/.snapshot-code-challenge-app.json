@@ -74,6 +74,16 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "notification_config": {
+          "name": "notification_config",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "'{ \"EMAIL\": true }'",
+          "mappedType": "json"
         }
       },
       "name": "patients",

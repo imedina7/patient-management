@@ -7,35 +7,35 @@ const DEFAULT_TTL = 60 * 60 * 12;
 
 @Injectable()
 export class CacheService {
-  private client: Valkey;
-
-  private static initialized = false;
+  private static client: Valkey;
 
   private readonly logger: Logger = new Logger(CacheService.name);
 
   constructor(readonly configService: ConfigService) {
-    this.client = new Valkey({
+    if (CacheService.client) return;
+
+    CacheService.client = new Valkey({
       host: this.configService.get(ConfigKey.VALKEY_HOST),
       port: this.configService.get(ConfigKey.VALKEY_PORT),
       keyPrefix: 'cache:',
       password: this.configService.get(ConfigKey.VALKEY_API_KEY),
+      connectTimeout:
+        this.configService.get(ConfigKey.VALKEY_CONNECT_TIMEOUT) ?? 5000,
+      maxRetriesPerRequest: 10,
     });
 
-    if (this.client && !CacheService.initialized) {
-      this.logger.log('Valkey client created');
-      this.getServerAttribute('redis_version')
-        .then((version) => {
-          this.logger.log(`Redis version: ${version}`);
-        })
-        .catch((error) => {
-          this.logger.error(error.message, error.stack, error.cause);
-        });
-      CacheService.initialized = true;
-    }
+    this.logger.log('Service Initialized!');
+    this.getServerAttribute('redis_version')
+      .then((version) => {
+        this.logger.log(`Redis server version: ${version}`);
+      })
+      .catch((error) => {
+        this.logger.error(error.message, error.stack, error.cause);
+      });
   }
 
   get(key: string) {
-    return this.client.get(key);
+    return CacheService.client.get(key);
   }
 
   async set(
@@ -43,21 +43,21 @@ export class CacheService {
     value: string,
     TTL: number = DEFAULT_TTL,
   ): Promise<'OK'> {
-    const result = await this.client.set(key, value);
+    const result = await CacheService.client.set(key, value);
 
     if (result === 'OK') {
-      await this.client.expire(key, TTL);
+      await CacheService.client.expire(key, TTL);
     }
     return 'OK';
   }
 
   invalidate(key: string) {
-    return this.client.del(key);
+    return CacheService.client.del(key);
   }
 
   async getServerAttribute(key: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.client.info((err, result) => {
+      CacheService.client.info((err, result) => {
         if (err) {
           reject(err);
         }

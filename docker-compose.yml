@@ -25,6 +25,8 @@ services:
       - "8080:8080"
     networks:
       - app-network
+    volumes:
+      - ./pg-servers.json:/tmp/servers.json
 
   valkey-service:
     image: valkey/valkey:latest
@@ -84,7 +86,7 @@ services:
       - "8000:8000"
     environment:
       - NODE_ENV=production
-      - API_BASE_URL="http://app-api:3000"
+      - API_BASE_URL=http://app-api:3000
     networks:
       - app-network
 

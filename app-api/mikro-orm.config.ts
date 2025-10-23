@@ -10,7 +10,6 @@ dotenv.config();
 
 const logger = new Logger('MikroORM');
 
-console.log(Object.values(entities));
 export default defineConfig({
   entities: Object.values(entities),
   clientUrl: process.env.DATABASE_URL,

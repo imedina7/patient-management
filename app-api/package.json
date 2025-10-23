@@ -11,13 +11,20 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "sleep 15 && node dist/src/main",
+    "start:prod": "node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "db:create": "mikro-orm database:create",
+    "db:migrate": "mikro-orm migration:up",
+    "db:migration:create": "mikro-orm migration:create",
+    "db:seed": "mikro-orm seeder:run",
+    "db:rollback": "mikro-orm migration:down",
+    "db:recreate": "mikro-orm schema:fresh --drop-db -r",
+    "db:drop": "mikro-orm schema:drop --drop-db -r"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.5.8",

@@ -5,8 +5,11 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
-  await app.get(MikroORM).getSchemaGenerator().updateSchema();
+  const isProd = process.env.NODE_ENV === 'production';
+  if(!isProd) {
+    await app.get(MikroORM).getSchemaGenerator().ensureDatabase();
+    await app.get(MikroORM).getSchemaGenerator().updateSchema();
+  }
 
   app.useGlobalPipes(
     new ValidationPipe({
